@@ -1,0 +1,31 @@
+# Hartree-Fock calculation - water (H2O)
+# Coordinates in Angstroms; multiplicity=1 → RHF
+
+[system]
+charge       = 0
+multiplicity = 1           # 1 → RHF; 2 or higher → UHF
+basis        = "sto-3g"    # must match a filename in ./basis/
+
+[[atoms]]
+symbol = "O"
+x = 0.000000
+y = 0.000000
+z = 0.000000
+
+[[atoms]]
+symbol = "H"
+x = 0.757200
+y = 0.586000
+z = 0.000000
+
+[[atoms]]
+symbol = "H"
+x = -0.757200
+y =  0.586000
+z =  0.000000
+
+[scf]
+max_iter    = 100
+convergence = 1.0e-9
+diis_size   = 8
+screen_tol  = 1.0e-10

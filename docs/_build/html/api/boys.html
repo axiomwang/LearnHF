@@ -1,0 +1,234 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>boys.hpp / boys.cpp — Boys Function &mdash; hftest 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams"]}, "macros": {"bra": ["\\langle #1 |", 1], "ket": ["| #1 \\rangle", 1], "braket": ["\\langle #1 | #2 \\rangle", 2]}}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="integrals.hpp / integrals.cpp — Integral Engine" href="integrals.html" />
+    <link rel="prev" title="basis.hpp / basis_parser.cpp — Basis Set Types &amp; Loader" href="basis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            hftest
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Installation &amp; Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Theory &amp; Algorithms</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../principles.html">Theory &amp; Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms &amp; Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="molecule.html"><code class="docutils literal notranslate"><span class="pre">molecule.hpp</span></code> — Molecular Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basis.html"><code class="docutils literal notranslate"><span class="pre">basis.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">basis_parser.cpp</span></code> — Basis Set Types &amp; Loader</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv46boys_Fid"><code class="docutils literal notranslate"><span class="pre">boys_F()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv49boys_FvecidPd"><code class="docutils literal notranslate"><span class="pre">boys_Fvec()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="integrals.html"><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scf.html"><code class="docutils literal notranslate"><span class="pre">scf.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">scf.cpp</span></code> — SCF Solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html"><code class="docutils literal notranslate"><span class="pre">output.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">output.cpp</span></code> — Result Printing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hftest</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="boys-hpp-boys-cpp-boys-function">
+<h1><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function<a class="headerlink" href="#boys-hpp-boys-cpp-boys-function" title="Link to this heading"></a></h1>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
+<li><p><a class="reference internal" href="#functions" id="id2">Functions</a></p></li>
+<li><p><a class="reference internal" href="#example" id="id3">Example</a></p></li>
+</ul>
+</nav>
+<section id="overview">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Efficient, numerically stable computation of the Boys function
+<span class="math notranslate nohighlight">\(F_n(x)\)</span> required by the McMurchie-Davidson integral engine.</p>
+<p><strong>Header:</strong> <code class="docutils literal notranslate"><span class="pre">include/boys.hpp</span></code>
+<strong>Source:</strong> <code class="docutils literal notranslate"><span class="pre">src/boys.cpp</span></code></p>
+<p>For the mathematical definition and derivation of the three evaluation
+regimes see <a class="reference internal" href="../algorithms.html#boys-function"><span class="std std-ref">Boys Function</span></a>.</p>
+</section>
+<section id="functions">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Functions</a><a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46boys_Fid">
+<span id="_CPPv36boys_Fid"></span><span id="_CPPv26boys_Fid"></span><span id="boys_F__i.double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">boys_F</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">x</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46boys_Fid" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> – Order <span class="math notranslate nohighlight">\(n \ge 0\)</span>.</p></li>
+<li><p><strong>x</strong> – Argument <span class="math notranslate nohighlight">\(x \ge 0\)</span>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="math notranslate nohighlight">\(F_n(x) = \int_0^1 t^{2n} e^{-xt^2}\,dt\)</span>.</p>
+</dd>
+</dl>
+<p>Convenience wrapper that allocates a temporary vector of size
+<span class="math notranslate nohighlight">\(n+1\)</span>, calls <a class="reference internal" href="#_CPPv49boys_FvecidPd" title="boys_Fvec"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">boys_Fvec()</span></code></a>, and returns the last element.
+Prefer <a class="reference internal" href="#_CPPv49boys_FvecidPd" title="boys_Fvec"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">boys_Fvec()</span></code></a> in hot loops.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49boys_FvecidPd">
+<span id="_CPPv39boys_FvecidPd"></span><span id="_CPPv29boys_FvecidPd"></span><span id="boys_Fvec__i.double.doubleP"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">boys_Fvec</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">nmax</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">x</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">F</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49boys_FvecidPd" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nmax</strong> – Maximum order; computes <span class="math notranslate nohighlight">\(F_0, F_1, \ldots, F_{n_\text{max}}\)</span>.</p></li>
+<li><p><strong>x</strong> – Argument <span class="math notranslate nohighlight">\(x \ge 0\)</span>.</p></li>
+<li><p><strong>F</strong> – <strong>Output</strong> array of size at least <span class="math notranslate nohighlight">\(n_\text{max}+1\)</span>
+(caller-allocated).  <code class="docutils literal notranslate"><span class="pre">F[n]</span></code> receives <span class="math notranslate nohighlight">\(F_n(x)\)</span>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Fills all Boys values in a single pass.  This is the primary entry
+point used by the integral engine, which requests
+<span class="math notranslate nohighlight">\(n_\text{max} = \ell_1+\ell_2+\ell_3+\ell_4\)</span>
+per primitive quartet.</p>
+<p>The three evaluation strategies used internally:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Range</p></th>
+<th class="head"><p>Method</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(x \le 10^{-14}\)</span></p></td>
+<td><p>Trivial limit: <span class="math notranslate nohighlight">\(F_n = 1/(2n+1)\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(0 &lt; x &lt; 1\)</span></p></td>
+<td><p>Taylor series
+<span class="math notranslate nohighlight">\(\sum_{k\ge 0} (-x)^k / [k!\,(2n+2k+1)]\)</span>
+(converges in &lt; 30 terms).</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(x \ge 1\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(F_0 = \tfrac{\sqrt\pi}{2\sqrt{x}}\operatorname{erf}(\sqrt{x})\)</span>,
+then upward recurrence
+<span class="math notranslate nohighlight">\(F_{n+1} = [(2n+1)F_n - e^{-x}]/(2x)\)</span>;
+asymptotic fallback if result is non-finite.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+<section id="example">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Example</a><a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;boys.hpp&quot;</span>
+
+<span class="c1">// Single value</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">f2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boys_F</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mf">3.5</span><span class="p">);</span><span class="w">   </span><span class="c1">// F_2(3.5)</span>
+
+<span class="c1">// Full vector (preferred in integral loops)</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">nmax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">F</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+<span class="n">boys_Fvec</span><span class="p">(</span><span class="n">nmax</span><span class="p">,</span><span class="w"> </span><span class="mf">1.23</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">);</span>
+<span class="c1">// F[0] = F_0(1.23), ..., F[4] = F_4(1.23)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basis.html" class="btn btn-neutral float-left" title="basis.hpp / basis_parser.cpp — Basis Set Types &amp; Loader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="integrals.html" class="btn btn-neutral float-right" title="integrals.hpp / integrals.cpp — Integral Engine" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Wang Shiyu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

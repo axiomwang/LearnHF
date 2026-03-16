@@ -1,0 +1,194 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hftest — A Hartree-Fock Program in C++23 &mdash; hftest 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation &amp; Usage" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            hftest
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Installation &amp; Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Theory &amp; Algorithms</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="principles.html">Theory &amp; Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms &amp; Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/molecule.html"><code class="docutils literal notranslate"><span class="pre">molecule.hpp</span></code> — Molecular Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/basis.html"><code class="docutils literal notranslate"><span class="pre">basis.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">basis_parser.cpp</span></code> — Basis Set Types &amp; Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/boys.html"><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/integrals.html"><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/scf.html"><code class="docutils literal notranslate"><span class="pre">scf.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">scf.cpp</span></code> — SCF Solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/output.html"><code class="docutils literal notranslate"><span class="pre">output.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">output.cpp</span></code> — Result Printing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">hftest</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">hftest — A Hartree-Fock Program in C++23</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hftest-a-hartree-fock-program-in-c-23">
+<h1>hftest — A Hartree-Fock Program in C++23<a class="headerlink" href="#hftest-a-hartree-fock-program-in-c-23" title="Link to this heading"></a></h1>
+<p><strong>hftest</strong> is a self-contained Restricted and Unrestricted Hartree-Fock (RHF/UHF)
+program written in modern C++23.  It uses <a class="reference external" href="https://pytorch.org/cppdocs/">LibTorch</a>
+for all linear algebra, reads molecular geometry and settings from a
+<a class="reference external" href="https://toml.io">TOML</a> input file, and loads basis sets from Basis Set Exchange
+(BSE) Gaussian-format files.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>H₂O / STO-3G  ·  RHF
+
+╔══════════════════════════════════╗
+║  Iteration   Energy (Ha)  ΔE        ΔRMS-P  ║
+╠══════════════════════════════════╣
+║       1  -74.9420799  —           —        ║
+║      ...                                   ║
+║      12  -75.0171735  5.8e-10  3.1e-09  ║
+╚══════════════════════════════════╝
+Total energy : -75.0171735279 Ha
+HOMO : -0.3971 Ha  LUMO : 0.5758 Ha  gap : 0.9729 Ha
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Installation &amp; Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#building">Building</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#input-file-format">Input File Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#basis-set-files">Basis Set Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#selecting-rhf-vs-uhf">Selecting RHF vs UHF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#example-open-shell-h-atom">Example: open-shell H atom</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Theory &amp; Algorithms</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="principles.html">Theory &amp; Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="principles.html#the-electronic-schrodinger-equation">The Electronic Schrödinger Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="principles.html#the-hartree-fock-approximation">The Hartree-Fock Approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="principles.html#lcao-expansion-and-the-roothaan-equations">LCAO Expansion and the Roothaan Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="principles.html#restricted-vs-unrestricted-hf">Restricted vs Unrestricted HF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="principles.html#gaussian-basis-sets">Gaussian Basis Sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="principles.html#canonical-orthogonalization">Canonical Orthogonalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="principles.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms &amp; Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#boys-function">Boys Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#mcmurchie-davidson-integral-engine">McMurchie-Davidson Integral Engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#direct-scf-and-schwarz-screening">Direct SCF and Schwarz Screening</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#pulay-diis-convergence-acceleration">Pulay DIIS Convergence Acceleration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#scf-convergence-criterion">SCF Convergence Criterion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/molecule.html"><code class="docutils literal notranslate"><span class="pre">molecule.hpp</span></code> — Molecular Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/basis.html"><code class="docutils literal notranslate"><span class="pre">basis.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">basis_parser.cpp</span></code> — Basis Set Types &amp; Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/boys.html"><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/integrals.html"><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/scf.html"><code class="docutils literal notranslate"><span class="pre">scf.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">scf.cpp</span></code> — SCF Solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/output.html"><code class="docutils literal notranslate"><span class="pre">output.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">output.cpp</span></code> — Result Printing</a></li>
+</ul>
+</div>
+<section id="indices">
+<h2>Indices<a class="headerlink" href="#indices" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-right" title="Installation &amp; Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Wang Shiyu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

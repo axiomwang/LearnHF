@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theory &amp; Principles &mdash; hftest 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams"]}, "macros": {"bra": ["\\langle #1 |", 1], "ket": ["| #1 \\rangle", 1], "braket": ["\\langle #1 | #2 \\rangle", 2]}}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Algorithms &amp; Implementation" href="algorithms.html" />
+    <link rel="prev" title="Installation &amp; Usage" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            hftest
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Installation &amp; Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Theory &amp; Algorithms</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Theory &amp; Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-electronic-schrodinger-equation">The Electronic Schrödinger Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-hartree-fock-approximation">The Hartree-Fock Approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lcao-expansion-and-the-roothaan-equations">LCAO Expansion and the Roothaan Equations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#electronic-energy">Electronic Energy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#restricted-vs-unrestricted-hf">Restricted vs Unrestricted HF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#restricted-hartree-fock-rhf">Restricted Hartree-Fock (RHF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unrestricted-hartree-fock-uhf">Unrestricted Hartree-Fock (UHF)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spin-contamination">Spin Contamination</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gaussian-basis-sets">Gaussian Basis Sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#canonical-orthogonalization">Canonical Orthogonalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms &amp; Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/molecule.html"><code class="docutils literal notranslate"><span class="pre">molecule.hpp</span></code> — Molecular Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/basis.html"><code class="docutils literal notranslate"><span class="pre">basis.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">basis_parser.cpp</span></code> — Basis Set Types &amp; Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/boys.html"><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/integrals.html"><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/scf.html"><code class="docutils literal notranslate"><span class="pre">scf.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">scf.cpp</span></code> — SCF Solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/output.html"><code class="docutils literal notranslate"><span class="pre">output.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">output.cpp</span></code> — Result Printing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hftest</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Theory &amp; Principles</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="theory-principles">
+<h1>Theory &amp; Principles<a class="headerlink" href="#theory-principles" title="Link to this heading"></a></h1>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#the-electronic-schrodinger-equation" id="id4">The Electronic Schrödinger Equation</a></p></li>
+<li><p><a class="reference internal" href="#the-hartree-fock-approximation" id="id5">The Hartree-Fock Approximation</a></p></li>
+<li><p><a class="reference internal" href="#lcao-expansion-and-the-roothaan-equations" id="id6">LCAO Expansion and the Roothaan Equations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#electronic-energy" id="id7">Electronic Energy</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#restricted-vs-unrestricted-hf" id="id8">Restricted vs Unrestricted HF</a></p>
+<ul>
+<li><p><a class="reference internal" href="#restricted-hartree-fock-rhf" id="id9">Restricted Hartree-Fock (RHF)</a></p></li>
+<li><p><a class="reference internal" href="#unrestricted-hartree-fock-uhf" id="id10">Unrestricted Hartree-Fock (UHF)</a></p></li>
+<li><p><a class="reference internal" href="#spin-contamination" id="id11">Spin Contamination</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#gaussian-basis-sets" id="id12">Gaussian Basis Sets</a></p></li>
+<li><p><a class="reference internal" href="#canonical-orthogonalization" id="id13">Canonical Orthogonalization</a></p></li>
+<li><p><a class="reference internal" href="#references" id="id14">References</a></p></li>
+</ul>
+</nav>
+<p>This page summarises the quantum-chemical theory underlying <strong>hftest</strong>.
+For full derivations the reader is referred to the canonical texts
+<a class="reference internal" href="#szabo1989" id="id1"><span>[Szabo1989]</span></a>, <a class="reference internal" href="#hjo2000" id="id2"><span>[HJO2000]</span></a>, and <a class="reference internal" href="#cramer2004" id="id3"><span>[Cramer2004]</span></a>.</p>
+<section id="the-electronic-schrodinger-equation">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">The Electronic Schrödinger Equation</a><a class="headerlink" href="#the-electronic-schrodinger-equation" title="Link to this heading"></a></h2>
+<p>Within the Born-Oppenheimer approximation the nuclei are treated as
+fixed classical point charges.  The goal is to solve</p>
+<div class="math notranslate nohighlight" id="equation-schr">
+<span class="eqno">(1)<a class="headerlink" href="#equation-schr" title="Link to this equation"></a></span>\[\hat{H}_\text{el}\, \Psi = E_\text{el}\, \Psi\]</div>
+<p>for the <em>N</em>-electron wave function <span class="math notranslate nohighlight">\(\Psi\)</span>, where</p>
+<div class="math notranslate nohighlight">
+\[\hat{H}_\text{el} = -\frac{1}{2}\sum_{i=1}^N \nabla_i^2
+    - \sum_{i=1}^N \sum_{A=1}^M \frac{Z_A}{r_{iA}}
+    + \sum_{i=1}^N \sum_{j&gt;i}^N \frac{1}{r_{ij}}.\]</div>
+<p>The total energy (observable) is</p>
+<div class="math notranslate nohighlight">
+\[E_\text{total} = E_\text{el} + E_\text{nuc}\,,\qquad
+E_\text{nuc} = \sum_{A &lt; B} \frac{Z_A Z_B}{R_{AB}}\,.\]</div>
+</section>
+<section id="the-hartree-fock-approximation">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">The Hartree-Fock Approximation</a><a class="headerlink" href="#the-hartree-fock-approximation" title="Link to this heading"></a></h2>
+<p>HF approximates <span class="math notranslate nohighlight">\(\Psi\)</span> by a single <em>Slater determinant</em>:</p>
+<div class="math notranslate nohighlight">
+\[\Psi_\text{HF} = \frac{1}{\sqrt{N!}}\det\!\bigl[\chi_1\chi_2\cdots\chi_N\bigr]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\chi_i\)</span> are <em>spin orbitals</em> — products of a spatial
+orbital <span class="math notranslate nohighlight">\(\phi_i(\mathbf{r})\)</span> and a spin function
+(<span class="math notranslate nohighlight">\(\alpha\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span>).</p>
+<p>The variational principle applied to this determinant yields the
+<strong>Hartree-Fock equations</strong></p>
+<div class="math notranslate nohighlight" id="equation-hfeq">
+<span class="eqno">(2)<a class="headerlink" href="#equation-hfeq" title="Link to this equation"></a></span>\[\hat{F}\,\phi_i = \varepsilon_i\,\phi_i\,,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{F}\)</span> is the <strong>Fock operator</strong></p>
+<div class="math notranslate nohighlight">
+\[\hat{F}(\mathbf{r}_1) = \hat{h}(\mathbf{r}_1)
+    + \sum_{j=1}^N \Bigl[\hat{J}_j(\mathbf{r}_1) - \hat{K}_j(\mathbf{r}_1)\Bigr].\]</div>
+<p>The one-electron Hamiltonian <span class="math notranslate nohighlight">\(\hat{h}\)</span> contains kinetic energy
+and nuclear attraction; <span class="math notranslate nohighlight">\(\hat{J}_j\)</span> is the <strong>Coulomb operator</strong>
+(mean-field repulsion) and <span class="math notranslate nohighlight">\(\hat{K}_j\)</span> is the non-local
+<strong>exchange operator</strong> (a pure quantum-mechanical effect with no
+classical analogue).</p>
+</section>
+<section id="lcao-expansion-and-the-roothaan-equations">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">LCAO Expansion and the Roothaan Equations</a><a class="headerlink" href="#lcao-expansion-and-the-roothaan-equations" title="Link to this heading"></a></h2>
+<p>Molecular orbitals are expanded in a finite <em>atomic-orbital</em> (AO)
+basis <span class="math notranslate nohighlight">\(\{\mu\}\)</span> of size <span class="math notranslate nohighlight">\(N_b\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\phi_i(\mathbf{r}) = \sum_{\mu=1}^{N_b} C_{\mu i}\,\chi_\mu(\mathbf{r}).\]</div>
+<p>Substituting into <a class="reference internal" href="#equation-hfeq">(2)</a> and projecting onto the basis gives the
+<strong>Roothaan-Hall</strong> (closed-shell) or <strong>Pople-Nesbet</strong> (open-shell)
+matrix equations:</p>
+<div class="math notranslate nohighlight" id="equation-roothaan">
+<span class="eqno">(3)<a class="headerlink" href="#equation-roothaan" title="Link to this equation"></a></span>\[\mathbf{F}\,\mathbf{C} = \mathbf{S}\,\mathbf{C}\,\boldsymbol{\varepsilon}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{S}_{\mu\nu} = \langle\mu|\nu\rangle\)</span> is the AO
+overlap matrix, <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is the MO coefficient matrix, and
+<span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}\)</span> is diagonal with orbital energies.</p>
+<p>The Fock matrix in the AO basis is</p>
+<div class="math notranslate nohighlight">
+\[F_{\mu\nu} = H^{\rm core}_{\mu\nu}
+    + \sum_{\lambda\sigma} P_{\lambda\sigma}
+      \Bigl[(\mu\nu|\lambda\sigma) - \tfrac{1}{2}(\mu\sigma|\lambda\nu)\Bigr]\]</div>
+<p>where <span class="math notranslate nohighlight">\((\mu\nu|\lambda\sigma) = \iint
+\chi_\mu(\mathbf{r}_1)\chi_\nu(\mathbf{r}_1)\,\frac{1}{r_{12}}\,
+\chi_\lambda(\mathbf{r}_2)\chi_\sigma(\mathbf{r}_2)\,
+d\mathbf{r}_1\,d\mathbf{r}_2\)</span>
+are the <strong>two-electron repulsion integrals</strong> (ERIs), and the <strong>density
+matrix</strong> is</p>
+<div class="math notranslate nohighlight">
+\[P_{\mu\nu} = 2\sum_{i=1}^{N/2} C_{\mu i} C_{\nu i}
+\quad \text{(closed-shell, RHF)}.\]</div>
+<section id="electronic-energy">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Electronic Energy</a><a class="headerlink" href="#electronic-energy" title="Link to this heading"></a></h3>
+<p>For RHF the converged electronic energy is</p>
+<div class="math notranslate nohighlight">
+\[E_\text{el} = \tfrac{1}{2}\operatorname{Tr}\!\bigl[
+    \mathbf{P}\bigl(\mathbf{H}^{\rm core} + \mathbf{F}\bigr)\bigr].\]</div>
+</section>
+</section>
+<section id="restricted-vs-unrestricted-hf">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Restricted vs Unrestricted HF</a><a class="headerlink" href="#restricted-vs-unrestricted-hf" title="Link to this heading"></a></h2>
+<section id="restricted-hartree-fock-rhf">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Restricted Hartree-Fock (RHF)</a><a class="headerlink" href="#restricted-hartree-fock-rhf" title="Link to this heading"></a></h3>
+<p>All electrons occupy <em>paired</em> spatial orbitals:
+<span class="math notranslate nohighlight">\(\alpha\)</span>- and <span class="math notranslate nohighlight">\(\beta\)</span>-spin electrons of the same pair share
+the same spatial function.  RHF is only applicable to closed-shell
+(singlet) systems.  It leads to the single Fock matrix above.</p>
+</section>
+<section id="unrestricted-hartree-fock-uhf">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Unrestricted Hartree-Fock (UHF)</a><a class="headerlink" href="#unrestricted-hartree-fock-uhf" title="Link to this heading"></a></h3>
+<p><span class="math notranslate nohighlight">\(\alpha\)</span>- and <span class="math notranslate nohighlight">\(\beta\)</span>-spin electrons use <strong>independent</strong>
+sets of spatial orbitals
+<span class="math notranslate nohighlight">\(\{\phi_i^\alpha\}\)</span> and <span class="math notranslate nohighlight">\(\{\phi_j^\beta\}\)</span>.</p>
+<p>The separate density matrices are</p>
+<div class="math notranslate nohighlight">
+\[P^\alpha_{\mu\nu} = \sum_{i=1}^{N_\alpha} C^\alpha_{\mu i} C^\alpha_{\nu i}\,,\qquad
+P^\beta_{\mu\nu}  = \sum_{i=1}^{N_\beta}  C^\beta_{\mu i}  C^\beta_{\nu i}\,,\]</div>
+<p>and the two Fock matrices are</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}F^\alpha_{\mu\nu} &amp;= H^{\rm core}_{\mu\nu}
+    + \sum_{\lambda\sigma}
+      \bigl(P^\alpha_{\lambda\sigma}+P^\beta_{\lambda\sigma}\bigr)(\mu\nu|\lambda\sigma)
+      - P^\alpha_{\lambda\sigma}(\mu\sigma|\lambda\nu) \\[4pt]
+F^\beta_{\mu\nu}  &amp;= H^{\rm core}_{\mu\nu}
+    + \sum_{\lambda\sigma}
+      \bigl(P^\alpha_{\lambda\sigma}+P^\beta_{\lambda\sigma}\bigr)(\mu\nu|\lambda\sigma)
+      - P^\beta_{\lambda\sigma}(\mu\sigma|\lambda\nu).\end{split}\]</div>
+<p>The electronic energy is</p>
+<div class="math notranslate nohighlight">
+\[E_\text{el} = \tfrac{1}{2}\operatorname{Tr}\!\bigl[
+    (\mathbf{P}^\alpha+\mathbf{P}^\beta)\mathbf{H}^{\rm core}
+    + \mathbf{P}^\alpha\mathbf{F}^\alpha
+    + \mathbf{P}^\beta \mathbf{F}^\beta\bigr].\]</div>
+</section>
+<section id="spin-contamination">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Spin Contamination</a><a class="headerlink" href="#spin-contamination" title="Link to this heading"></a></h3>
+<p>UHF wave functions are not eigenfunctions of <span class="math notranslate nohighlight">\(\hat{S}^2\)</span> in
+general.  The expectation value</p>
+<div class="math notranslate nohighlight">
+\[\langle\hat{S}^2\rangle_\text{UHF}
+= S(S+1) + N_\beta - \sum_{i,j} \bigl|\langle\phi^\alpha_i|\phi^\beta_j\rangle\bigl|^2\]</div>
+<p>deviates from the exact value <span class="math notranslate nohighlight">\(S(S+1)\)</span> by the <em>spin-contamination</em>
+term, evaluated from the overlap of occupied alpha and beta MO blocks.</p>
+</section>
+</section>
+<section id="gaussian-basis-sets">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Gaussian Basis Sets</a><a class="headerlink" href="#gaussian-basis-sets" title="Link to this heading"></a></h2>
+<p>The AO basis functions are <em>contracted Gaussian-type orbitals</em> (cGTOs):</p>
+<div class="math notranslate nohighlight">
+\[\chi_\mu(\mathbf{r}) \propto
+    \underbrace{x^{n_x} y^{n_y} z^{n_z}}_{\text{angular part}}\,
+    \sum_k d_k\, e^{-\alpha_k |\mathbf{r}-\mathbf{A}|^2}\]</div>
+<p>where <span class="math notranslate nohighlight">\((n_x,n_y,n_z)\)</span> specifies the Cartesian angular momentum,
+<span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is the nuclear centre, the <span class="math notranslate nohighlight">\(\alpha_k\)</span> are
+primitive exponents, and the <span class="math notranslate nohighlight">\(d_k\)</span> are contraction coefficients
+pre-normalised during basis loading.</p>
+<p>The angular quantum number <span class="math notranslate nohighlight">\(\ell = n_x+n_y+n_z\)</span> labels the shell
+type: <span class="math notranslate nohighlight">\(\ell=0\)</span> (S), <span class="math notranslate nohighlight">\(1\)</span> (P), <span class="math notranslate nohighlight">\(2\)</span> (D), <span class="math notranslate nohighlight">\(3\)</span> (F),
+<span class="math notranslate nohighlight">\(4\)</span> (G).  A shell of angular momentum <span class="math notranslate nohighlight">\(\ell\)</span> contains</p>
+<div class="math notranslate nohighlight">
+\[N_\text{cart}(\ell) = \tfrac{(\ell+1)(\ell+2)}{2}\]</div>
+<p>Cartesian basis functions.</p>
+</section>
+<section id="canonical-orthogonalization">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Canonical Orthogonalization</a><a class="headerlink" href="#canonical-orthogonalization" title="Link to this heading"></a></h2>
+<p>Equation <a class="reference internal" href="#equation-roothaan">(3)</a> is a <em>generalised</em> eigenvalue problem because
+<span class="math notranslate nohighlight">\(\mathbf{S}\)</span> is not the identity when basis functions overlap.
+<strong>Canonical orthogonalization</strong> transforms to an orthonormal basis:</p>
+<ol class="arabic simple">
+<li><p>Diagonalise  <span class="math notranslate nohighlight">\(\mathbf{S} = \mathbf{U}\boldsymbol{\Lambda}\mathbf{U}^\top\)</span>.</p></li>
+<li><p>Define  <span class="math notranslate nohighlight">\(\mathbf{X} = \mathbf{U}\boldsymbol{\Lambda}^{-1/2}\)</span>, keeping
+only columns with <span class="math notranslate nohighlight">\(\lambda_i \ge 10^{-8}\)</span> (discarding linearly
+dependent combinations).</p></li>
+<li><p>Transform  <span class="math notranslate nohighlight">\(\mathbf{F}' = \mathbf{X}^\top\mathbf{F}\mathbf{X}\)</span>.</p></li>
+<li><p>Solve the <em>ordinary</em> eigenvalue problem  <span class="math notranslate nohighlight">\(\mathbf{F}'\mathbf{C}' = \mathbf{C}'\boldsymbol{\varepsilon}\)</span>.</p></li>
+<li><p>Back-transform  <span class="math notranslate nohighlight">\(\mathbf{C} = \mathbf{X}\mathbf{C}'\)</span>.</p></li>
+</ol>
+</section>
+<section id="references">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">References</a><a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<div role="list" class="citation-list">
+<div class="citation" id="szabo1989" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Szabo1989</a><span class="fn-bracket">]</span></span>
+<p>A. Szabo and N. S. Ostlund, <em>Modern Quantum Chemistry</em>,
+Dover (1989).</p>
+</div>
+<div class="citation" id="hjo2000" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">HJO2000</a><span class="fn-bracket">]</span></span>
+<p>T. Helgaker, P. Jørgensen, and J. Olsen,
+<em>Molecular Electronic-Structure Theory</em>, Wiley (2000).</p>
+</div>
+<div class="citation" id="cramer2004" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">Cramer2004</a><span class="fn-bracket">]</span></span>
+<p>C. J. Cramer, <em>Essentials of Computational Chemistry</em>,
+2nd ed., Wiley (2004).</p>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Installation &amp; Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="algorithms.html" class="btn btn-neutral float-right" title="Algorithms &amp; Implementation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Wang Shiyu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

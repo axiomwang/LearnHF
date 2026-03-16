@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &amp; Usage &mdash; hftest 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams"]}, "macros": {"bra": ["\\langle #1 |", 1], "ket": ["| #1 \\rangle", 1], "braket": ["\\langle #1 | #2 \\rangle", 2]}}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Theory &amp; Principles" href="principles.html" />
+    <link rel="prev" title="hftest — A Hartree-Fock Program in C++23" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            hftest
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation &amp; Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building">Building</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-file-format">Input File Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basis-set-files">Basis Set Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#selecting-rhf-vs-uhf">Selecting RHF vs UHF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-open-shell-h-atom">Example: open-shell H atom</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Theory &amp; Algorithms</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="principles.html">Theory &amp; Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms &amp; Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/molecule.html"><code class="docutils literal notranslate"><span class="pre">molecule.hpp</span></code> — Molecular Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/basis.html"><code class="docutils literal notranslate"><span class="pre">basis.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">basis_parser.cpp</span></code> — Basis Set Types &amp; Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/boys.html"><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/integrals.html"><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/scf.html"><code class="docutils literal notranslate"><span class="pre">scf.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">scf.cpp</span></code> — SCF Solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/output.html"><code class="docutils literal notranslate"><span class="pre">output.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">output.cpp</span></code> — Result Printing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hftest</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation &amp; Usage</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation-usage">
+<h1>Installation &amp; Usage<a class="headerlink" href="#installation-usage" title="Link to this heading"></a></h1>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#building" id="id2">Building</a></p></li>
+<li><p><a class="reference internal" href="#input-file-format" id="id3">Input File Format</a></p></li>
+<li><p><a class="reference internal" href="#basis-set-files" id="id4">Basis Set Files</a></p></li>
+<li><p><a class="reference internal" href="#selecting-rhf-vs-uhf" id="id5">Selecting RHF vs UHF</a></p></li>
+<li><p><a class="reference internal" href="#example-open-shell-h-atom" id="id6">Example: open-shell H atom</a></p></li>
+</ul>
+</nav>
+<section id="prerequisites">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The program is developed and tested against the <strong>standalone LibTorch 2.11.0</strong>
+installed at <code class="docutils literal notranslate"><span class="pre">/usr/local</span></code>.  If you have a PyTorch Python installation, CMake
+auto-detection will find it as a fallback, but the standalone build is preferred
+because it avoids duplicate-header conflicts.</p>
+</div>
+</section>
+<section id="building">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Building</a><a class="headerlink" href="#building" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Clone / enter the source tree</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>&lt;repo-url&gt;<span class="w"> </span>hftest
+<span class="nb">cd</span><span class="w"> </span>hftest
+</pre></div>
+</div>
+</li>
+<li><p><strong>Configure with CMake</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+</pre></div>
+</div>
+<p>CMake will search for a LibTorch installation in this order:</p>
+<ol class="loweralpha simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/usr/local/share/cmake/Torch</span></code> (standalone)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$(python3</span> <span class="pre">-c</span> <span class="pre">&quot;...sitepackages&quot;)/torch/share/cmake/Torch</span></code></p></li>
+<li><p>The path given by <code class="docutils literal notranslate"><span class="pre">-DTORCH_HINT=&lt;cmake-dir&gt;</span></code> on the command line.</p></li>
+</ol>
+<p>A successful configuration prints:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-- Using Torch cmake dir: /usr/local/share/cmake/Torch
+-- Found Torch: ...
+</pre></div>
+</div>
+</li>
+<li><p><strong>Compile</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>--build<span class="w"> </span>build<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+</pre></div>
+</div>
+<p>The binary is placed at <code class="docutils literal notranslate"><span class="pre">build/hftest</span></code>.</p>
+</li>
+<li><p><strong>Run the bundled test</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./hftest<span class="w"> </span>../input.toml
+</pre></div>
+</div>
+<p>Expected output (abridged):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Converged: YES   Iterations: 12
+Total energy: -75.0171735279 Ha
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="input-file-format">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Input File Format</a><a class="headerlink" href="#input-file-format" title="Link to this heading"></a></h2>
+<p>The program reads a <a class="reference external" href="https://toml.io">TOML</a> file.  The minimal structure is:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Molecular system ──────────────────────────────────────────────</span>
+<span class="k">[system]</span>
+<span class="n">charge</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">     </span><span class="c1"># net charge (integer, default 0)</span>
+<span class="n">multiplicity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">     </span><span class="c1"># 2S+1 (1 = singlet → RHF; &gt;1 → UHF)</span>
+<span class="n">basis</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sto-3g&quot;</span>
+
+<span class="c1"># ── Geometry (Cartesian Angstroms) ────────────────────────────────</span>
+<span class="k">[[atoms]]</span>
+<span class="n">symbol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;O&quot;</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.000000</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.000000</span>
+<span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.117790</span>
+
+<span class="k">[[atoms]]</span>
+<span class="n">symbol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;H&quot;</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.000000</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.757200</span>
+<span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-0.471160</span>
+
+<span class="k">[[atoms]]</span>
+<span class="n">symbol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;H&quot;</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">0.000000</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-0.757200</span>
+<span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-0.471160</span>
+
+<span class="c1"># ── SCF settings (all optional) ───────────────────────────────────</span>
+<span class="k">[scf]</span>
+<span class="n">max_iter</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w">      </span><span class="c1"># maximum number of SCF iterations</span>
+<span class="n">convergence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-9</span><span class="w">     </span><span class="c1"># energy + density convergence threshold</span>
+<span class="n">diis_size</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="w">        </span><span class="c1"># DIIS subspace size</span>
+<span class="n">screen_tol</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-10</span><span class="w">    </span><span class="c1"># Schwarz screening threshold for ERIs</span>
+</pre></div>
+</div>
+</section>
+<section id="basis-set-files">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Basis Set Files</a><a class="headerlink" href="#basis-set-files" title="Link to this heading"></a></h2>
+<p>Basis sets live in the <code class="docutils literal notranslate"><span class="pre">basis/</span></code> directory.  Files use the
+<em>Basis Set Exchange</em> (BSE) <strong>Gaussian-format</strong> layout, identical to what
+BSE exports when you select “Gaussian94” format.  The filename must
+match the <code class="docutils literal notranslate"><span class="pre">basis</span></code> key in the TOML file (case-insensitive):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>basis/
+├── sto-3g
+├── 6-31g(d)
+├── cc-pvdz
+└── def2-tzvpp
+...
+</pre></div>
+</div>
+<p>Bundled basis sets span H through Xe and include Pople, Dunning
+correlation-consistent, def2, and LANL families.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>LANL effective-core-potential (ECP) blocks inside basis files are
+<strong>silently skipped</strong> — only the valence Gaussian contractions are
+loaded.  ECP integrals are not yet implemented.</p>
+</div>
+</section>
+<section id="selecting-rhf-vs-uhf">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Selecting RHF vs UHF</a><a class="headerlink" href="#selecting-rhf-vs-uhf" title="Link to this heading"></a></h2>
+<p>The choice is made automatically from <code class="docutils literal notranslate"><span class="pre">multiplicity</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multiplicity</span> <span class="pre">=</span> <span class="pre">1</span></code> and an <strong>even</strong> number of electrons → <strong>RHF</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiplicity</span> <span class="pre">≥</span> <span class="pre">2</span></code> <strong>or</strong> an <strong>odd</strong> number of electrons → <strong>UHF</strong></p></li>
+</ul>
+<p>UHF output additionally reports <span class="math notranslate nohighlight">\(\langle \hat{S}^2 \rangle\)</span> and
+flags spin contamination when</p>
+<div class="math notranslate nohighlight">
+\[\langle \hat{S}^2 \rangle_\text{UHF} - \langle \hat{S}^2 \rangle_\text{exact}
+&gt; 0.1 \cdot \langle \hat{S}^2 \rangle_\text{exact}\,.\]</div>
+</section>
+<section id="example-open-shell-h-atom">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Example: open-shell H atom</a><a class="headerlink" href="#example-open-shell-h-atom" title="Link to this heading"></a></h2>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[system]</span>
+<span class="n">charge</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">multiplicity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">basis</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sto-3g&quot;</span>
+
+<span class="k">[[atoms]]</span>
+<span class="n">symbol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;H&quot;</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+</pre></div>
+</div>
+<p>Expected output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Converged: YES   Iterations: 2
+Total energy:   -0.4665818504 Ha
+&lt;S²&gt; exact:  0.7500
+&lt;S²&gt; UHF:    0.7500
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="hftest — A Hartree-Fock Program in C++23" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="principles.html" class="btn btn-neutral float-right" title="Theory &amp; Principles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Wang Shiyu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

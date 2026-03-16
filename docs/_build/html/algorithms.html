@@ -1,0 +1,458 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithms &amp; Implementation &mdash; hftest 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams"]}, "macros": {"bra": ["\\langle #1 |", 1], "ket": ["| #1 \\rangle", 1], "braket": ["\\langle #1 | #2 \\rangle", 2]}}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="molecule.hpp — Molecular Data Structures" href="api/molecule.html" />
+    <link rel="prev" title="Theory &amp; Principles" href="principles.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            hftest
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Installation &amp; Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Theory &amp; Algorithms</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="principles.html">Theory &amp; Principles</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithms &amp; Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#boys-function">Boys Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#regime-1-trivial-limit-x-le-10-14">Regime 1 — Trivial limit (<span class="math notranslate nohighlight">\(x \le 10^{-14}\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regime-2-taylor-series-0-x-1">Regime 2 — Taylor series (<span class="math notranslate nohighlight">\(0 &lt; x &lt; 1\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regime-3-analytic-f-0-upward-recurrence-x-ge-1">Regime 3 — Analytic <span class="math notranslate nohighlight">\(F_0\)</span> + upward recurrence (<span class="math notranslate nohighlight">\(x \ge 1\)</span>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mcmurchie-davidson-integral-engine">McMurchie-Davidson Integral Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#e-coefficients">E-Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#r-integrals">R-Integrals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#one-electron-integrals">One-Electron Integrals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overlap-s-mu-nu-langle-mu-nu-rangle">Overlap <span class="math notranslate nohighlight">\(S_{\mu\nu} = \langle\mu|\nu\rangle\)</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kinetic-energy-t-mu-nu-langle-mu-tfrac-1-2-nabla-2-nu-rangle">Kinetic energy <span class="math notranslate nohighlight">\(T_{\mu\nu} = \langle\mu|-\tfrac{1}{2}\nabla^2|\nu\rangle\)</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nuclear-attraction-v-mu-nu-langle-mu-z-a-r-1a-nu-rangle">Nuclear attraction <span class="math notranslate nohighlight">\(V_{\mu\nu} = \langle\mu|{-Z_A}/{r_{1A}}|\nu\rangle\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#two-electron-integrals-eris">Two-Electron Integrals (ERIs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shell-normalization">Shell Normalization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#direct-scf-and-schwarz-screening">Direct SCF and Schwarz Screening</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pulay-diis-convergence-acceleration">Pulay DIIS Convergence Acceleration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#error-vector">Error Vector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#diis-linear-system">DIIS Linear System</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scf-convergence-criterion">SCF Convergence Criterion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/molecule.html"><code class="docutils literal notranslate"><span class="pre">molecule.hpp</span></code> — Molecular Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/basis.html"><code class="docutils literal notranslate"><span class="pre">basis.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">basis_parser.cpp</span></code> — Basis Set Types &amp; Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/boys.html"><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/integrals.html"><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/scf.html"><code class="docutils literal notranslate"><span class="pre">scf.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">scf.cpp</span></code> — SCF Solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/output.html"><code class="docutils literal notranslate"><span class="pre">output.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">output.cpp</span></code> — Result Printing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hftest</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Algorithms &amp; Implementation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="algorithms-implementation">
+<h1>Algorithms &amp; Implementation<a class="headerlink" href="#algorithms-implementation" title="Link to this heading"></a></h1>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#boys-function" id="id5">Boys Function</a></p>
+<ul>
+<li><p><a class="reference internal" href="#regime-1-trivial-limit-x-le-10-14" id="id6">Regime 1 — Trivial limit (<span class="math notranslate nohighlight">\(x \le 10^{-14}\)</span>)</a></p></li>
+<li><p><a class="reference internal" href="#regime-2-taylor-series-0-x-1" id="id7">Regime 2 — Taylor series (<span class="math notranslate nohighlight">\(0 &lt; x &lt; 1\)</span>)</a></p></li>
+<li><p><a class="reference internal" href="#regime-3-analytic-f-0-upward-recurrence-x-ge-1" id="id8">Regime 3 — Analytic <span class="math notranslate nohighlight">\(F_0\)</span> + upward recurrence (<span class="math notranslate nohighlight">\(x \ge 1\)</span>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#mcmurchie-davidson-integral-engine" id="id9">McMurchie-Davidson Integral Engine</a></p>
+<ul>
+<li><p><a class="reference internal" href="#e-coefficients" id="id10">E-Coefficients</a></p></li>
+<li><p><a class="reference internal" href="#r-integrals" id="id11">R-Integrals</a></p></li>
+<li><p><a class="reference internal" href="#one-electron-integrals" id="id12">One-Electron Integrals</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overlap-s-mu-nu-langle-mu-nu-rangle" id="id13">Overlap <span class="math notranslate nohighlight">\(S_{\mu\nu} = \langle\mu|\nu\rangle\)</span></a></p></li>
+<li><p><a class="reference internal" href="#kinetic-energy-t-mu-nu-langle-mu-tfrac-1-2-nabla-2-nu-rangle" id="id14">Kinetic energy <span class="math notranslate nohighlight">\(T_{\mu\nu} = \langle\mu|-\tfrac{1}{2}\nabla^2|\nu\rangle\)</span></a></p></li>
+<li><p><a class="reference internal" href="#nuclear-attraction-v-mu-nu-langle-mu-z-a-r-1a-nu-rangle" id="id15">Nuclear attraction <span class="math notranslate nohighlight">\(V_{\mu\nu} = \langle\mu|{-Z_A}/{r_{1A}}|\nu\rangle\)</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#two-electron-integrals-eris" id="id16">Two-Electron Integrals (ERIs)</a></p></li>
+<li><p><a class="reference internal" href="#shell-normalization" id="id17">Shell Normalization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#direct-scf-and-schwarz-screening" id="id18">Direct SCF and Schwarz Screening</a></p></li>
+<li><p><a class="reference internal" href="#pulay-diis-convergence-acceleration" id="id19">Pulay DIIS Convergence Acceleration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#error-vector" id="id20">Error Vector</a></p></li>
+<li><p><a class="reference internal" href="#diis-linear-system" id="id21">DIIS Linear System</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#scf-convergence-criterion" id="id22">SCF Convergence Criterion</a></p></li>
+<li><p><a class="reference internal" href="#references" id="id23">References</a></p></li>
+</ul>
+</nav>
+<p>This page describes the numerical algorithms used in <strong>hftest</strong>,
+covering: Boys function evaluation, the McMurchie-Davidson integral
+engine, direct SCF with Schwarz screening, and Pulay DIIS.</p>
+<section id="boys-function">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Boys Function</a><a class="headerlink" href="#boys-function" title="Link to this heading"></a></h2>
+<p>The <em>Boys function</em> of order <span class="math notranslate nohighlight">\(n\)</span> appears as the fundamental
+building block of all nuclear-attraction and electron-repulsion
+integrals over Gaussian basis functions:</p>
+<div class="math notranslate nohighlight" id="equation-boys">
+<span class="eqno">(1)<a class="headerlink" href="#equation-boys" title="Link to this equation"></a></span>\[F_n(x) = \int_0^1 t^{2n}\, e^{-x t^2}\, dt
+        = \frac{1}{2}\, x^{-(n+\tfrac{1}{2})}\,
+          \gamma\!\left(n+\tfrac{1}{2},\, x\right),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\gamma\)</span> is the lower incomplete Gamma function.</p>
+<section id="regime-1-trivial-limit-x-le-10-14">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Regime 1 — Trivial limit (<span class="math notranslate nohighlight">\(x \le 10^{-14}\)</span>)</a><a class="headerlink" href="#regime-1-trivial-limit-x-le-10-14" title="Link to this heading"></a></h3>
+<p>When <span class="math notranslate nohighlight">\(x \approx 0\)</span> the integrand equals <span class="math notranslate nohighlight">\(t^{2n}\)</span> and</p>
+<div class="math notranslate nohighlight">
+\[F_n(0) = \frac{1}{2n+1}.\]</div>
+</section>
+<section id="regime-2-taylor-series-0-x-1">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Regime 2 — Taylor series (<span class="math notranslate nohighlight">\(0 &lt; x &lt; 1\)</span>)</a><a class="headerlink" href="#regime-2-taylor-series-0-x-1" title="Link to this heading"></a></h3>
+<p>For small positive <span class="math notranslate nohighlight">\(x\)</span> the exponential is expanded:</p>
+<div class="math notranslate nohighlight">
+\[F_n(x) = \int_0^1 t^{2n}\sum_{k=0}^\infty \frac{(-x)^k t^{2k}}{k!}\,dt
+        = \sum_{k=0}^\infty \frac{(-x)^k}{k!\,(2n+2k+1)}.\]</div>
+<p>The partial-sum loop breaks when the absolute term drops below
+<span class="math notranslate nohighlight">\(10^{-16}\)</span> (typically converges in fewer than 30 terms for
+<span class="math notranslate nohighlight">\(x &lt; 1\)</span>).</p>
+</section>
+<section id="regime-3-analytic-f-0-upward-recurrence-x-ge-1">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Regime 3 — Analytic <span class="math notranslate nohighlight">\(F_0\)</span> + upward recurrence (<span class="math notranslate nohighlight">\(x \ge 1\)</span>)</a><a class="headerlink" href="#regime-3-analytic-f-0-upward-recurrence-x-ge-1" title="Link to this heading"></a></h3>
+<p>For large <span class="math notranslate nohighlight">\(x\)</span> the <span class="math notranslate nohighlight">\(n = 0\)</span> case has the closed form</p>
+<div class="math notranslate nohighlight">
+\[F_0(x) = \frac{\sqrt{\pi}}{2\sqrt{x}}\,\operatorname{erf}(\sqrt{x}).\]</div>
+<p>Higher orders are then generated by the <strong>upward recurrence</strong>:</p>
+<div class="math notranslate nohighlight" id="equation-upward">
+<span class="eqno">(2)<a class="headerlink" href="#equation-upward" title="Link to this equation"></a></span>\[F_{n+1}(x) = \frac{(2n+1)\,F_n(x) - e^{-x}}{2x}.\]</div>
+<p>For very large <span class="math notranslate nohighlight">\(x\)</span>, cancellation in <a class="reference internal" href="#equation-upward">(2)</a> can make the
+result non-finite.  In that case the <strong>asymptotic approximation</strong> is
+used as a fallback:</p>
+<div class="math notranslate nohighlight">
+\[F_n(x) \approx \frac{(2n-1)!!\,\sqrt{\pi}}{2^{n+1}\, x^{n+\tfrac{1}{2}}}
+\quad (x \to \infty).\]</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">boys_Fvec(nmax,</span> <span class="pre">x,</span> <span class="pre">F[])</span></code> computes all orders
+<span class="math notranslate nohighlight">\(F_0, F_1, \ldots, F_{n_\text{max}}\)</span> in a single pass, which is
+critical for performance in the integral engine.</p>
+</section>
+</section>
+<section id="mcmurchie-davidson-integral-engine">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">McMurchie-Davidson Integral Engine</a><a class="headerlink" href="#mcmurchie-davidson-integral-engine" title="Link to this heading"></a></h2>
+<p>All one- and two-electron integrals are computed using the
+<strong>McMurchie-Davidson</strong> (MD) scheme <a class="reference internal" href="#md1978" id="id1"><span>[MD1978]</span></a>.  The key idea is to
+expand a product of two Cartesian Gaussians</p>
+<div class="math notranslate nohighlight">
+\[G_{ij}(r,\alpha,\beta,X_{AB})
+= (r-A)^i\,e^{-\alpha(r-A)^2}\cdot(r-B)^j\,e^{-\beta(r-B)^2}\]</div>
+<p>as a linear combination of <em>Hermite Gaussians</em> centred at
+<span class="math notranslate nohighlight">\(P = (\alpha A+\beta B)/p\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[G_{ij} = \sum_{t=0}^{i+j} E_t^{ij}(\alpha,\beta,X_{AB})\,
+          \Lambda_t(p, r-P),\qquad
+\Lambda_t(p,x) = \left(-\frac{\partial}{\partial P}\right)^t e^{-p(r-P)^2}.\]</div>
+<section id="e-coefficients">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">E-Coefficients</a><a class="headerlink" href="#e-coefficients" title="Link to this heading"></a></h3>
+<p>The expansion coefficients <span class="math notranslate nohighlight">\(E_t^{ij}\)</span> satisfy the three-term
+recursion (one Cartesian direction at a time):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}E_t^{i+1,j} &amp;= \frac{1}{2p} E_{t-1}^{ij}
+               + X_{PA}\, E_t^{ij}
+               + (t+1)\, E_{t+1}^{ij} \\[4pt]
+E_t^{i,j+1} &amp;= \frac{1}{2p} E_{t-1}^{ij}
+               + X_{PB}\, E_t^{ij}
+               + (t+1)\, E_{t+1}^{ij}\end{split}\]</div>
+<p>starting from <span class="math notranslate nohighlight">\(E_0^{00} = e^{-\mu X_{AB}^2}\)</span> with
+<span class="math notranslate nohighlight">\(\mu = \alpha\beta/p\)</span>.</p>
+<p>The implementation stores the full table
+<code class="docutils literal notranslate"><span class="pre">E[i][j][t]</span></code> with <span class="math notranslate nohighlight">\(i,j \le 8\)</span> and <span class="math notranslate nohighlight">\(t \le i+j\)</span> as a stack
+array of size <code class="docutils literal notranslate"><span class="pre">[9][9][18]</span></code> (<code class="docutils literal notranslate"><span class="pre">ETable</span></code>).</p>
+</section>
+<section id="r-integrals">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">R-Integrals</a><a class="headerlink" href="#r-integrals" title="Link to this heading"></a></h3>
+<p>The auxiliary Hermite integrals required for nuclear-attraction (NA)
+and ERI evaluation are:</p>
+<div class="math notranslate nohighlight">
+\[R_{tuv}^n = (-2p)^n\,
+    \frac{\partial^t}{\partial P_x^t}
+    \frac{\partial^u}{\partial P_y^u}
+    \frac{\partial^v}{\partial P_z^v}
+    \frac{1}{r}\bigg|_{r=|\mathbf{P}-\mathbf{C}|}\]</div>
+<p>with base case</p>
+<div class="math notranslate nohighlight">
+\[R_{000}^n = F_n(p\,R_{PC}^2)\]</div>
+<p>and recursion <a class="reference internal" href="#hjo2000b" id="id2"><span>[HJO2000b]</span></a> (eq. 9.9.18):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}R_{t+1,u,v}^n &amp;= t\,R_{t-1,u,v}^{n+1} + X_{PC}\,R_{tuv}^{n+1} \\
+R_{t,u+1,v}^n &amp;= u\,R_{t,u-1,v}^{n+1} + Y_{PC}\,R_{tuv}^{n+1} \\
+R_{t,u,v+1}^n &amp;= v\,R_{t,u,v-1}^{n+1} + Z_{PC}\,R_{tuv}^{n+1}.\end{split}\]</div>
+<p>The table <code class="docutils literal notranslate"><span class="pre">R[n][t][u][v]</span></code> is stored as <code class="docutils literal notranslate"><span class="pre">[20][20][20][20]</span></code> doubles on the
+thread-local stack.</p>
+</section>
+<section id="one-electron-integrals">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">One-Electron Integrals</a><a class="headerlink" href="#one-electron-integrals" title="Link to this heading"></a></h3>
+<section id="overlap-s-mu-nu-langle-mu-nu-rangle">
+<h4><a class="toc-backref" href="#id13" role="doc-backlink">Overlap <span class="math notranslate nohighlight">\(S_{\mu\nu} = \langle\mu|\nu\rangle\)</span></a><a class="headerlink" href="#overlap-s-mu-nu-langle-mu-nu-rangle" title="Link to this heading"></a></h4>
+<p>For primitives <span class="math notranslate nohighlight">\((\mathbf{a}, \ell_a)\)</span> and <span class="math notranslate nohighlight">\((\mathbf{b}, \ell_b)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[S_{\mu\nu} = E_0^{n_{x,a}\,n_{x,b}}\,E_0^{n_{y,a}\,n_{y,b}}\,E_0^{n_{z,a}\,n_{z,b}}
+\cdot \left(\frac{\pi}{p}\right)^{3/2}.\]</div>
+</section>
+<section id="kinetic-energy-t-mu-nu-langle-mu-tfrac-1-2-nabla-2-nu-rangle">
+<h4><a class="toc-backref" href="#id14" role="doc-backlink">Kinetic energy <span class="math notranslate nohighlight">\(T_{\mu\nu} = \langle\mu|-\tfrac{1}{2}\nabla^2|\nu\rangle\)</span></a><a class="headerlink" href="#kinetic-energy-t-mu-nu-langle-mu-tfrac-1-2-nabla-2-nu-rangle" title="Link to this heading"></a></h4>
+<p>Using the Obara-Saika relation <a class="reference internal" href="#os1986" id="id3"><span>[OS1986]</span></a>:</p>
+<div class="math notranslate nohighlight">
+\[T_{\mu\nu} = \beta(2\ell_b+3)\,S_{\mu\nu}^{(b)}
+  - 2\beta^2\,S_{\mu\nu}^{(b+2)}
+  - \tfrac{1}{2}\ell_b(\ell_b-1)\,S_{\mu\nu}^{(b-2)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(S^{(b\pm 2)}\)</span> denotes the overlap integral with the
+angular momentum of centre B raised/lowered by one unit (total) in the
+relevant Cartesian direction, expressed via E-coefficient tables
+accumulated at the same <span class="math notranslate nohighlight">\(p\)</span>.</p>
+</section>
+<section id="nuclear-attraction-v-mu-nu-langle-mu-z-a-r-1a-nu-rangle">
+<h4><a class="toc-backref" href="#id15" role="doc-backlink">Nuclear attraction <span class="math notranslate nohighlight">\(V_{\mu\nu} = \langle\mu|{-Z_A}/{r_{1A}}|\nu\rangle\)</span></a><a class="headerlink" href="#nuclear-attraction-v-mu-nu-langle-mu-z-a-r-1a-nu-rangle" title="Link to this heading"></a></h4>
+<div class="math notranslate nohighlight">
+\[V_{\mu\nu} = \frac{2\pi}{p} \sum_A (-Z_A)
+    \sum_{tuv} E_t^{(x)}\,E_u^{(y)}\,E_v^{(z)}\, R_{tuv}^0\]</div>
+<p>summed over all nuclear centres <span class="math notranslate nohighlight">\(A\)</span>.</p>
+</section>
+</section>
+<section id="two-electron-integrals-eris">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Two-Electron Integrals (ERIs)</a><a class="headerlink" href="#two-electron-integrals-eris" title="Link to this heading"></a></h3>
+<p>The four-centre ERI</p>
+<div class="math notranslate nohighlight">
+\[(\mu\nu|\lambda\sigma) = \iint
+\chi_\mu(\mathbf{r}_1)\chi_\nu(\mathbf{r}_1)\,\frac{1}{r_{12}}\,
+\chi_\lambda(\mathbf{r}_2)\chi_\sigma(\mathbf{r}_2)\,
+d\mathbf{r}_1\,d\mathbf{r}_2\]</div>
+<p>factorises (after Gaussian product theorem applied to both pairs) as</p>
+<div class="math notranslate nohighlight">
+\[(\mu\nu|\lambda\sigma)
+= \frac{2\pi^{5/2}}{p\,q\sqrt{p+q}}
+  \sum_{t_1 u_1 v_1}
+  \sum_{t_2 u_2 v_2}
+  E_{t_1}^{(x,12)}\,E_{u_1}^{(y,12)}\,E_{v_1}^{(z,12)}\,
+  E_{t_2}^{(x,34)}\,E_{u_2}^{(y,34)}\,E_{v_2}^{(z,34)}\,
+  (-1)^{t_2+u_2+v_2}\,
+  R_{t_1+t_2,u_1+u_2,v_1+v_2}^0\]</div>
+<p>where <span class="math notranslate nohighlight">\(p = \alpha_1+\alpha_2\)</span>, <span class="math notranslate nohighlight">\(q = \alpha_3+\alpha_4\)</span>,
+<span class="math notranslate nohighlight">\(\mathbf{W} = (p\mathbf{P}+q\mathbf{Q})/(p+q)\)</span>, and the
+R-integrals are evaluated at <span class="math notranslate nohighlight">\(\mathbf{W}-\mathbf{P}\)</span> with
+parameter <span class="math notranslate nohighlight">\(\rho = pq/(p+q)\)</span>.</p>
+<p>The Boys vector is computed once per primitive quartet with
+<code class="docutils literal notranslate"><span class="pre">boys_Fvec(nmax,</span> <span class="pre">rho*RPQ²,</span> <span class="pre">F)</span></code> where <span class="math notranslate nohighlight">\(n_\text{max}\)</span> is the
+sum of all four angular momenta.</p>
+</section>
+<section id="shell-normalization">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Shell Normalization</a><a class="headerlink" href="#shell-normalization" title="Link to this heading"></a></h3>
+<p>After primitive contractions are assembled, each shell is normalized so
+that its diagonal overlap matrix element equals 1:</p>
+<div class="math notranslate nohighlight">
+\[N_\mu = \frac{1}{\sqrt{\langle\mu|\mu\rangle}}.\]</div>
+<p>This is applied to all contracted functions within the shell
+simultaneously, matching the convention used by Gaussian09 and Psi4.</p>
+</section>
+</section>
+<section id="direct-scf-and-schwarz-screening">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Direct SCF and Schwarz Screening</a><a class="headerlink" href="#direct-scf-and-schwarz-screening" title="Link to this heading"></a></h2>
+<p><strong>Direct SCF</strong> recomputes all ERIs every iteration — no disk storage.
+This scales as <span class="math notranslate nohighlight">\(\mathcal{O}(N_b^4)\)</span> naively but is accelerated
+by the <strong>Schwarz inequality</strong>: for a shell quartet <span class="math notranslate nohighlight">\((\mu\nu|\lambda\sigma)\)</span></p>
+<div class="math notranslate nohighlight">
+\[|(\mu\nu|\lambda\sigma)| \le \sqrt{(\mu\nu|\mu\nu)}\,\sqrt{(\lambda\sigma|\lambda\sigma)}.\]</div>
+<p>Define the <em>Schwarz matrix</em> <span class="math notranslate nohighlight">\(Q_{\mu\nu} = \sqrt{(\mu\nu|\mu\nu)}\)</span>.
+Shell quartets are skipped entirely when</p>
+<div class="math notranslate nohighlight">
+\[Q_{\mu\nu}^{\rm shell}\cdot Q_{\lambda\sigma}^{\rm shell} &lt; \varepsilon_{\rm screen}\]</div>
+<p>(default <span class="math notranslate nohighlight">\(\varepsilon_{\rm screen} = 10^{-10}\)</span>).  Within a
+surviving shell quartet, individual basis-function pairs are also
+screened before accumulating into <span class="math notranslate nohighlight">\(\mathbf{J}\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf{K}\)</span>.</p>
+<p>The J/K build exploits the 8-fold permutational symmetry of real ERIs:</p>
+<div class="math notranslate nohighlight">
+\[(\mu\nu|\lambda\sigma) = (\nu\mu|\lambda\sigma) = (\mu\nu|\sigma\lambda)
+= (\lambda\sigma|\mu\nu) = \ldots\]</div>
+<p>so each unique quartet is computed once.</p>
+</section>
+<section id="pulay-diis-convergence-acceleration">
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Pulay DIIS Convergence Acceleration</a><a class="headerlink" href="#pulay-diis-convergence-acceleration" title="Link to this heading"></a></h2>
+<p>Without acceleration, the SCF iteration</p>
+<div class="math notranslate nohighlight">
+\[P_{\rm new} = \text{diagonalize}\bigl(F[P]\bigr)\]</div>
+<p>may converge only linearly or oscillate.  <strong>Direct Inversion in the
+Iterative Subspace</strong> (DIIS) <a class="reference internal" href="#pulay1980" id="id4"><span>[Pulay1980]</span></a> constructs a better Fock matrix
+as a linear combination of previous iterates:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{F}_\text{DIIS} = \sum_{i=1}^m c_i\, \mathbf{F}_i\]</div>
+<p>where the coefficients <span class="math notranslate nohighlight">\(c_i\)</span> minimise the error norm subject to
+<span class="math notranslate nohighlight">\(\sum_i c_i = 1\)</span>.</p>
+<section id="error-vector">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Error Vector</a><a class="headerlink" href="#error-vector" title="Link to this heading"></a></h3>
+<p>The DIIS error vector is taken as the <em>commutator</em> of the Fock and
+density matrices in the orthogonal AO basis:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{e} = \mathbf{F}\mathbf{P}\mathbf{S} - \mathbf{S}\mathbf{P}\mathbf{F}.\]</div>
+<p>When <span class="math notranslate nohighlight">\(\mathbf{e} = 0\)</span> the density matrix satisfies the
+idempotency and the Fock equations simultaneously, so this is a well-
+motivated measure of SCF error.</p>
+</section>
+<section id="diis-linear-system">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">DIIS Linear System</a><a class="headerlink" href="#diis-linear-system" title="Link to this heading"></a></h3>
+<p>The DIIS equations form the bordered linear system</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+B_{11} &amp; \cdots &amp; B_{1m} &amp; -1 \\
+\vdots &amp; \ddots &amp; \vdots &amp; \vdots \\
+B_{m1} &amp; \cdots &amp; B_{mm} &amp; -1 \\
+-1     &amp; \cdots &amp; -1     &amp;  0
+\end{pmatrix}
+\begin{pmatrix} c_1 \\ \vdots \\ c_m \\ \lambda \end{pmatrix}
+=
+\begin{pmatrix} 0 \\ \vdots \\ 0 \\ -1 \end{pmatrix}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(B_{ij} = \langle \mathbf{e}_i | \mathbf{e}_j \rangle =
+\operatorname{Tr}(\mathbf{e}_i^\top \mathbf{e}_j)\)</span>.</p>
+<p>This is solved via <code class="docutils literal notranslate"><span class="pre">at::linalg_solve</span></code>.  If the matrix is singular (a
+degenerate subspace), the program falls back to the most recent Fock
+matrix.</p>
+</section>
+</section>
+<section id="scf-convergence-criterion">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">SCF Convergence Criterion</a><a class="headerlink" href="#scf-convergence-criterion" title="Link to this heading"></a></h2>
+<p>Convergence is declared when <em>both</em> of the following are satisfied
+simultaneously:</p>
+<div class="math notranslate nohighlight">
+\[|\Delta E| &lt; \varepsilon \quad \text{and} \quad
+\text{RMS}(\Delta \mathbf{P}) &lt; \varepsilon\]</div>
+<p>where <span class="math notranslate nohighlight">\(\varepsilon\)</span> is the user-supplied <code class="docutils literal notranslate"><span class="pre">convergence</span></code> threshold
+(default <span class="math notranslate nohighlight">\(10^{-8}\)</span>).</p>
+<p>The initial guess for the density matrix is obtained from the
+<strong>core-Hamiltonian</strong> (bare-nucleus) Fock matrix: diagonalise
+<span class="math notranslate nohighlight">\(\mathbf{H}^{\rm core}\)</span> in the orthogonal basis, occupy the
+<span class="math notranslate nohighlight">\(N/2\)</span> lowest orbitals, and form <span class="math notranslate nohighlight">\(\mathbf{P}^{(0)}\)</span>.</p>
+</section>
+<section id="references">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">References</a><a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<div role="list" class="citation-list">
+<div class="citation" id="md1978" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">MD1978</a><span class="fn-bracket">]</span></span>
+<p>L. E. McMurchie and E. R. Davidson, <em>J. Comput. Phys.</em> <strong>26</strong>,
+218 (1978).</p>
+</div>
+<div class="citation" id="os1986" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">OS1986</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="19">
+<li><p>Obara and A. Saika, <em>J. Chem. Phys.</em> <strong>84</strong>, 3963 (1986).</p></li>
+</ol>
+</div>
+<div class="citation" id="pulay1980" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">Pulay1980</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="16">
+<li><p>Pulay, <em>Chem. Phys. Lett.</em> <strong>73</strong>, 393 (1980).</p></li>
+</ol>
+</div>
+<div class="citation" id="hjo2000b" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">HJO2000b</a><span class="fn-bracket">]</span></span>
+<p>T. Helgaker, P. Jørgensen, and J. Olsen,
+<em>Molecular Electronic-Structure Theory</em>, Wiley (2000).</p>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="principles.html" class="btn btn-neutral float-left" title="Theory &amp; Principles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/molecule.html" class="btn btn-neutral float-right" title="molecule.hpp — Molecular Data Structures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Wang Shiyu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

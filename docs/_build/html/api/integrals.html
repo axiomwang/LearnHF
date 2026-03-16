@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>integrals.hpp / integrals.cpp — Integral Engine &mdash; hftest 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams"]}, "macros": {"bra": ["\\langle #1 |", 1], "ket": ["| #1 \\rangle", 1], "braket": ["\\langle #1 | #2 \\rangle", 2]}}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="scf.hpp / scf.cpp — SCF Solvers" href="scf.html" />
+    <link rel="prev" title="boys.hpp / boys.cpp — Boys Function" href="boys.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            hftest
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Installation &amp; Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Theory &amp; Algorithms</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../principles.html">Theory &amp; Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms &amp; Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="molecule.html"><code class="docutils literal notranslate"><span class="pre">molecule.hpp</span></code> — Molecular Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basis.html"><code class="docutils literal notranslate"><span class="pre">basis.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">basis_parser.cpp</span></code> — Basis Set Types &amp; Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boys.html"><code class="docutils literal notranslate"><span class="pre">boys.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">boys.cpp</span></code> — Boys Function</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#one-electron-integrals">One-Electron Integrals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv413build_overlapRK8BasisSet"><code class="docutils literal notranslate"><span class="pre">build_overlap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv413build_kineticRK8BasisSet"><code class="docutils literal notranslate"><span class="pre">build_kinetic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv413build_nuclearRK8BasisSetRK8Molecule"><code class="docutils literal notranslate"><span class="pre">build_nuclear()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv411build_hcoreRK8BasisSetRK8Molecule"><code class="docutils literal notranslate"><span class="pre">build_hcore()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#two-electron-integrals">Two-Electron Integrals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv413build_schwarzRK8BasisSet"><code class="docutils literal notranslate"><span class="pre">build_schwarz()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv48build_JKRK8BasisSetRKN5torch6TensorERKN5torch6TensorEd"><code class="docutils literal notranslate"><span class="pre">build_JK()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#internal-functions-implementation-details">Internal Functions (implementation details)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fill-e-e-alpha-beta-xab"><code class="docutils literal notranslate"><span class="pre">fill_E(E,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">XAB)</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fill-r-r-p-pc-nmax"><code class="docutils literal notranslate"><span class="pre">fill_R(R,</span> <span class="pre">p,</span> <span class="pre">PC,</span> <span class="pre">nmax)</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prim-norm-alpha-l"><code class="docutils literal notranslate"><span class="pre">prim_norm(alpha,</span> <span class="pre">l)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scf.html"><code class="docutils literal notranslate"><span class="pre">scf.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">scf.cpp</span></code> — SCF Solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html"><code class="docutils literal notranslate"><span class="pre">output.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">output.cpp</span></code> — Result Printing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hftest</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="integrals-hpp-integrals-cpp-integral-engine">
+<h1><code class="docutils literal notranslate"><span class="pre">integrals.hpp</span></code> / <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> — Integral Engine<a class="headerlink" href="#integrals-hpp-integrals-cpp-integral-engine" title="Link to this heading"></a></h1>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
+<li><p><a class="reference internal" href="#one-electron-integrals" id="id2">One-Electron Integrals</a></p></li>
+<li><p><a class="reference internal" href="#two-electron-integrals" id="id3">Two-Electron Integrals</a></p></li>
+<li><p><a class="reference internal" href="#internal-functions-implementation-details" id="id4">Internal Functions (implementation details)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fill-e-e-alpha-beta-xab" id="id5"><code class="docutils literal notranslate"><span class="pre">fill_E(E,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">XAB)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fill-r-r-p-pc-nmax" id="id6"><code class="docutils literal notranslate"><span class="pre">fill_R(R,</span> <span class="pre">p,</span> <span class="pre">PC,</span> <span class="pre">nmax)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#prim-norm-alpha-l" id="id7"><code class="docutils literal notranslate"><span class="pre">prim_norm(alpha,</span> <span class="pre">l)</span></code></a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="overview">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Computes all one- and two-electron AO integrals using the
+McMurchie-Davidson scheme.  All returned tensors are
+<code class="docutils literal notranslate"><span class="pre">torch::kDouble</span></code>, two-dimensional (or rank-4 is never returned
+directly — the Coulomb/exchange matrices are already contracted with a
+density matrix).</p>
+<p><strong>Header:</strong> <code class="docutils literal notranslate"><span class="pre">include/integrals.hpp</span></code>
+<strong>Source:</strong> <code class="docutils literal notranslate"><span class="pre">src/integrals.cpp</span></code></p>
+<p>For the mathematical background see <a class="reference internal" href="../algorithms.html#mcmurchie-davidson-integral-engine"><span class="std std-ref">McMurchie-Davidson Integral Engine</span></a>.</p>
+</section>
+<section id="one-electron-integrals">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">One-Electron Integrals</a><a class="headerlink" href="#one-electron-integrals" title="Link to this heading"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413build_overlapRK8BasisSet">
+<span id="_CPPv313build_overlapRK8BasisSet"></span><span id="_CPPv213build_overlapRK8BasisSet"></span><span id="build_overlap__BasisSetCR"></span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">build_overlap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="basis.html#_CPPv48BasisSet" title="BasisSet"><span class="n"><span class="pre">BasisSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413build_overlapRK8BasisSet" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Symmetric <span class="math notranslate nohighlight">\(N_b \times N_b\)</span> overlap matrix
+<span class="math notranslate nohighlight">\(S_{\mu\nu} = \langle\mu|\nu\rangle\)</span>.</p>
+</dd>
+</dl>
+<p>Key property: <span class="math notranslate nohighlight">\(S = X^{-T} X^{-1}\)</span> where <span class="math notranslate nohighlight">\(X\)</span> is the
+canonical orthogonalization matrix (see <a class="reference internal" href="../principles.html#canonical-orthogonalization"><span class="std std-ref">Canonical Orthogonalization</span></a>).</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413build_kineticRK8BasisSet">
+<span id="_CPPv313build_kineticRK8BasisSet"></span><span id="_CPPv213build_kineticRK8BasisSet"></span><span id="build_kinetic__BasisSetCR"></span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">build_kinetic</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="basis.html#_CPPv48BasisSet" title="BasisSet"><span class="n"><span class="pre">BasisSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413build_kineticRK8BasisSet" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Symmetric <span class="math notranslate nohighlight">\(N_b \times N_b\)</span> kinetic energy matrix
+<span class="math notranslate nohighlight">\(T_{\mu\nu} = \langle\mu|-\tfrac{1}{2}\nabla^2|\nu\rangle\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413build_nuclearRK8BasisSetRK8Molecule">
+<span id="_CPPv313build_nuclearRK8BasisSetRK8Molecule"></span><span id="_CPPv213build_nuclearRK8BasisSetRK8Molecule"></span><span id="build_nuclear__BasisSetCR.MoleculeCR"></span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">build_nuclear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="basis.html#_CPPv48BasisSet" title="BasisSet"><span class="n"><span class="pre">BasisSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="molecule.html#_CPPv48Molecule" title="Molecule"><span class="n"><span class="pre">Molecule</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">mol</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413build_nuclearRK8BasisSetRK8Molecule" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bs</strong> – Basis set.</p></li>
+<li><p><strong>mol</strong> – Molecule; atomic charges <span class="math notranslate nohighlight">\(Z_A\)</span> and positions
+<span class="math notranslate nohighlight">\(\mathbf{R}_A\)</span> enter the nuclear-attraction sum.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Symmetric <span class="math notranslate nohighlight">\(N_b \times N_b\)</span> nuclear-attraction matrix</p>
+<div class="math notranslate nohighlight">
+\[V_{\mu\nu} = \sum_A \left\langle\mu\left|
+\frac{-Z_A}{|\mathbf{r}-\mathbf{R}_A|}\right|\nu\right\rangle.\]</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411build_hcoreRK8BasisSetRK8Molecule">
+<span id="_CPPv311build_hcoreRK8BasisSetRK8Molecule"></span><span id="_CPPv211build_hcoreRK8BasisSetRK8Molecule"></span><span id="build_hcore__BasisSetCR.MoleculeCR"></span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">build_hcore</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="basis.html#_CPPv48BasisSet" title="BasisSet"><span class="n"><span class="pre">BasisSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="molecule.html#_CPPv48Molecule" title="Molecule"><span class="n"><span class="pre">Molecule</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">mol</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411build_hcoreRK8BasisSetRK8Molecule" title="Link to this definition"></a><br /></dt>
+<dd><p>Convenience inline that returns
+<a class="reference internal" href="#_CPPv413build_kineticRK8BasisSet" title="build_kinetic"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">build_kinetic()</span></code></a> <code class="docutils literal notranslate"><span class="pre">+</span></code> <a class="reference internal" href="#_CPPv413build_nuclearRK8BasisSetRK8Molecule" title="build_nuclear"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">build_nuclear()</span></code></a>:</p>
+<div class="math notranslate nohighlight">
+\[H^{\rm core}_{\mu\nu} = T_{\mu\nu} + V_{\mu\nu}.\]</div>
+<p>Defined inline in the header.</p>
+</dd></dl>
+
+</section>
+<section id="two-electron-integrals">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Two-Electron Integrals</a><a class="headerlink" href="#two-electron-integrals" title="Link to this heading"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413build_schwarzRK8BasisSet">
+<span id="_CPPv313build_schwarzRK8BasisSet"></span><span id="_CPPv213build_schwarzRK8BasisSet"></span><span id="build_schwarz__BasisSetCR"></span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">build_schwarz</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="basis.html#_CPPv48BasisSet" title="BasisSet"><span class="n"><span class="pre">BasisSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413build_schwarzRK8BasisSet" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Symmetric <span class="math notranslate nohighlight">\(N_b \times N_b\)</span> Schwarz bound matrix
+<span class="math notranslate nohighlight">\(Q_{\mu\nu} = \sqrt{(\mu\nu|\mu\nu)}\)</span>.</p>
+</dd>
+</dl>
+<p>Used to screen shell quartets and individual basis-function pairs in
+<a class="reference internal" href="#_CPPv48build_JKRK8BasisSetRKN5torch6TensorERKN5torch6TensorEd" title="build_JK"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">build_JK()</span></code></a>.  Call this <strong>once</strong> before the SCF iteration and
+pass the result to every <a class="reference internal" href="#_CPPv48build_JKRK8BasisSetRKN5torch6TensorERKN5torch6TensorEd" title="build_JK"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">build_JK()</span></code></a> call.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48build_JKRK8BasisSetRKN5torch6TensorERKN5torch6TensorEd">
+<span id="_CPPv38build_JKRK8BasisSetRKN5torch6TensorERKN5torch6TensorEd"></span><span id="_CPPv28build_JKRK8BasisSetRKN5torch6TensorERKN5torch6TensorEd"></span><span id="build_JK__BasisSetCR.torch::TensorCR.torch::TensorCR.double"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">build_JK</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="basis.html#_CPPv48BasisSet" title="BasisSet"><span class="n"><span class="pre">BasisSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">P</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">torch</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">screen</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-10</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48build_JKRK8BasisSetRKN5torch6TensorERKN5torch6TensorEd" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bs</strong> – Basis set.</p></li>
+<li><p><strong>P</strong> – AO density matrix <span class="math notranslate nohighlight">\(\mathbf{P}\)</span>, shape
+<span class="math notranslate nohighlight">\([N_b, N_b]\)</span>, <code class="docutils literal notranslate"><span class="pre">torch::kDouble</span></code>.</p></li>
+<li><p><strong>screen</strong> – Schwarz matrix from <a class="reference internal" href="#_CPPv413build_schwarzRK8BasisSet" title="build_schwarz"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">build_schwarz()</span></code></a>.</p></li>
+<li><p><strong>tol</strong> – Schwarz screening threshold (default <code class="docutils literal notranslate"><span class="pre">1e-10</span></code>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{J,</span> <span class="pre">K}</span></code> — Coulomb and exchange matrices,
+both <span class="math notranslate nohighlight">\(N_b \times N_b\)</span>.</p>
+</dd>
+</dl>
+<p>Computes in a single loop over shell quartets:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}J_{\mu\nu} &amp;= \sum_{\lambda\sigma} P_{\lambda\sigma}\,(\mu\nu|\lambda\sigma) \\
+K_{\mu\nu} &amp;= \sum_{\lambda\sigma} P_{\lambda\sigma}\,(\mu\sigma|\lambda\nu)\end{split}\]</div>
+<p>exploiting <strong>8-fold permutational symmetry</strong> and <strong>Schwarz screening</strong>.</p>
+<p>Two screening levels are applied:</p>
+<ol class="arabic simple">
+<li><p><strong>Shell level</strong>: skip entire shell quartet
+<span class="math notranslate nohighlight">\((\mathbf{a}\mathbf{b}|\mathbf{c}\mathbf{d})\)</span> if
+<span class="math notranslate nohighlight">\(Q_{ab}^\text{shell} \cdot Q_{cd}^\text{shell} &lt; \varepsilon\)</span>.</p></li>
+<li><p><strong>Function level</strong>: within a surviving quartet, skip individual
+<span class="math notranslate nohighlight">\((\mu\nu|\lambda\sigma)\)</span> if
+<span class="math notranslate nohighlight">\(|Q_{\mu\nu}| \cdot |Q_{\lambda\sigma}| &lt; \varepsilon\)</span>.</p></li>
+</ol>
+<p>The Fock matrix is then assembled by the caller as
+<span class="math notranslate nohighlight">\(F = H^{\rm core} + J - \tfrac{1}{2}K\)</span> (RHF) or the
+spin-specific form for UHF.</p>
+</dd></dl>
+
+</section>
+<section id="internal-functions-implementation-details">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Internal Functions (implementation details)</a><a class="headerlink" href="#internal-functions-implementation-details" title="Link to this heading"></a></h2>
+<p>The following are in the anonymous namespace of <code class="docutils literal notranslate"><span class="pre">integrals.cpp</span></code> and
+not part of the public API, but are documented here for reference.</p>
+<section id="fill-e-e-alpha-beta-xab">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">fill_E(E,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">XAB)</span></code></a><a class="headerlink" href="#fill-e-e-alpha-beta-xab" title="Link to this heading"></a></h3>
+<p>Fills the <span class="math notranslate nohighlight">\(9 \times 9 \times 18\)</span> E-coefficient table for one
+Cartesian direction with exponents <span class="math notranslate nohighlight">\(\alpha\)</span>, <span class="math notranslate nohighlight">\(\beta\)</span> and
+centre separation <span class="math notranslate nohighlight">\(X_{AB} = A - B\)</span> (in Bohr).</p>
+<p>Uses horizontal recursion for <span class="math notranslate nohighlight">\(j = 0\)</span> first, then vertical
+recursion for <span class="math notranslate nohighlight">\(j &gt; 0\)</span>.</p>
+</section>
+<section id="fill-r-r-p-pc-nmax">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">fill_R(R,</span> <span class="pre">p,</span> <span class="pre">PC,</span> <span class="pre">nmax)</span></code></a><a class="headerlink" href="#fill-r-r-p-pc-nmax" title="Link to this heading"></a></h3>
+<p>Fills the <span class="math notranslate nohighlight">\(20 \times 20 \times 20 \times 20\)</span> R-integral table
+<span class="math notranslate nohighlight">\(R^n_{tuv}\)</span> up to order <em>nmax</em>, for exponent <em>p</em> and
+displacement <span class="math notranslate nohighlight">\(\mathbf{P}-\mathbf{C}\)</span>.</p>
+<p>The Boys values at each base index are supplied externally via the
+global Boys vector computed once per shell pair/quartet.</p>
+</section>
+<section id="prim-norm-alpha-l">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">prim_norm(alpha,</span> <span class="pre">l)</span></code></a><a class="headerlink" href="#prim-norm-alpha-l" title="Link to this heading"></a></h3>
+<p>Returns the normalisation constant for a primitive Gaussian with
+exponent <span class="math notranslate nohighlight">\(\alpha\)</span> and angular momentum <span class="math notranslate nohighlight">\(\ell\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[N = \left(\frac{2\alpha}{\pi}\right)^{3/4}
+    \sqrt{\frac{(4\alpha)^\ell}{(2\ell-1)!!}}\]</div>
+<p>Used during basis loading in <code class="docutils literal notranslate"><span class="pre">basis_parser.cpp</span></code>.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="boys.html" class="btn btn-neutral float-left" title="boys.hpp / boys.cpp — Boys Function" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scf.html" class="btn btn-neutral float-right" title="scf.hpp / scf.cpp — SCF Solvers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Wang Shiyu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

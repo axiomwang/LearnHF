@@ -1,0 +1,232 @@
+Installation & Usage
+====================
+
+.. contents:: On this page
+   :depth: 2
+   :local:
+
+Prerequisites
+-------------
+
+.. list-table::
+    :header-rows: 1
+    :widths: 20 20 60
+
+    * - Dependency
+       - Minimum version
+       - Notes
+    * - CMake
+       - 3.18
+       - 4.x recommended
+    * - C++ compiler
+       - C++23-capable
+       - AppleClang >= 17, GCC >= 13, Clang >= 17
+    * - LibTorch
+       - 2.0
+       - Standalone **or** PyTorch headers
+    * - Ninja *(optional)*
+       - any
+       - Faster than ``make``
+
+.. note::
+
+   The program is developed and tested against the **standalone LibTorch 2.11.0**
+   installed at ``/usr/local``.  If you have a PyTorch Python installation, CMake
+   auto-detection will find it as a fallback, but the standalone build is preferred
+   because it avoids duplicate-header conflicts.
+
+Building
+--------
+
+1. **Clone / enter the source tree**
+
+   .. code-block:: bash
+
+      git clone <repo-url> hftest
+      cd hftest
+
+2. **Configure with CMake**
+
+   .. code-block:: bash
+
+      cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+   CMake will search for a LibTorch installation in this order:
+
+   a. ``/usr/local/share/cmake/Torch`` (standalone)
+   b. ``$(python3 -c "...sitepackages")/torch/share/cmake/Torch``
+   c. The path given by ``-DTORCH_HINT=<cmake-dir>`` on the command line.
+
+   A successful configuration prints:
+
+   .. code-block:: none
+
+      -- Using Torch cmake dir: /usr/local/share/cmake/Torch
+      -- Found Torch: ...
+
+3. **Compile**
+
+   .. code-block:: bash
+
+      cmake --build build -j$(nproc)
+
+   The binary is placed at ``build/hftest``.
+
+4. **Run the bundled test**
+
+   .. code-block:: bash
+
+      cd build && ./hftest ../input.toml
+
+   Expected output (abridged):
+
+   .. code-block:: none
+
+      Converged: YES   Iterations: 12
+      Total energy: -75.0171735279 Ha
+
+Input File Format
+-----------------
+
+The program reads a `TOML <https://toml.io>`_ file.  The minimal structure is:
+
+.. code-block:: toml
+
+   # ── Molecular system ──────────────────────────────────────────────
+   [system]
+   charge       = 0     # net charge (integer, default 0)
+   multiplicity = 1     # 2S+1 (1 = singlet → RHF; >1 → UHF)
+   basis        = "sto-3g"
+
+   # ── Geometry (Cartesian Angstroms) ────────────────────────────────
+   [[atoms]]
+   symbol = "O"
+   x = 0.000000
+   y = 0.000000
+   z = 0.117790
+
+   [[atoms]]
+   symbol = "H"
+   x = 0.000000
+   y = 0.757200
+   z = -0.471160
+
+   [[atoms]]
+   symbol = "H"
+   x =  0.000000
+   y = -0.757200
+   z = -0.471160
+
+   # ── SCF settings (all optional) ───────────────────────────────────
+   [scf]
+   max_iter    = 100      # maximum number of SCF iterations
+   convergence = 1e-9     # energy + density convergence threshold
+   diis_size   = 8        # DIIS subspace size
+   screen_tol  = 1e-10    # Schwarz screening threshold for ERIs
+
+.. list-table:: TOML keys reference
+   :header-rows: 1
+   :widths: 25 15 15 45
+
+   * - Key
+     - Section
+     - Default
+     - Description
+   * - ``charge``
+     - ``[system]``
+     - ``0``
+     - Net molecular charge.
+   * - ``multiplicity``
+     - ``[system]``
+     - ``1``
+     - Spin multiplicity (2S+1). ``1`` → RHF; ``≥ 2`` → UHF.
+   * - ``basis``
+     - ``[system]``
+     - *(required)*
+     - Basis set name, matched case-insensitively to files in
+       ``basis/`` directory.
+   * - ``max_iter``
+     - ``[scf]``
+     - ``100``
+     - Maximum number of SCF iterations before declaring failure.
+   * - ``convergence``
+     - ``[scf]``
+     - ``1e-8``
+       - Convergence criterion applied simultaneously to
+          :math:`|\Delta E|` and :math:`\mathrm{RMS}(\Delta\mathbf{P})`.
+   * - ``diis_size``
+     - ``[scf]``
+     - ``8``
+     - Number of Fock/error vector pairs retained in DIIS memory.
+   * - ``screen_tol``
+     - ``[scf]``
+     - ``1e-10``
+     - Schwarz inequality screening tolerance for two-electron
+       integral shell quartets.
+
+Basis Set Files
+---------------
+
+Basis sets live in the ``basis/`` directory.  Files use the
+*Basis Set Exchange* (BSE) **Gaussian-format** layout, identical to what
+BSE exports when you select "Gaussian94" format.  The filename must
+match the ``basis`` key in the TOML file (case-insensitive):
+
+.. code-block:: none
+
+   basis/
+   ├── sto-3g
+   ├── 6-31g(d)
+   ├── cc-pvdz
+   └── def2-tzvpp
+   ...
+
+Bundled basis sets span H through Xe and include Pople, Dunning
+correlation-consistent, def2, and LANL families.
+
+.. note::
+
+   LANL effective-core-potential (ECP) blocks inside basis files are
+   **silently skipped** — only the valence Gaussian contractions are
+   loaded.  ECP integrals are not yet implemented.
+
+Selecting RHF vs UHF
+---------------------
+
+The choice is made automatically from ``multiplicity``:
+
+* ``multiplicity = 1`` and an **even** number of electrons → **RHF**
+* ``multiplicity ≥ 2`` **or** an **odd** number of electrons → **UHF**
+
+UHF output additionally reports :math:`\langle \hat{S}^2 \rangle` and
+flags spin contamination when
+
+.. math::
+
+   \langle \hat{S}^2 \rangle_\text{UHF} - \langle \hat{S}^2 \rangle_\text{exact}
+   > 0.1 \cdot \langle \hat{S}^2 \rangle_\text{exact}\,.
+
+Example: open-shell H atom
+--------------------------
+
+.. code-block:: toml
+
+   [system]
+   charge       = 0
+   multiplicity = 2
+   basis        = "sto-3g"
+
+   [[atoms]]
+   symbol = "H"
+   x = 0.0
+   y = 0.0
+   z = 0.0
+
+Expected output:
+
+.. code-block:: none
+
+   Converged: YES   Iterations: 2
+   Total energy:   -0.4665818504 Ha
+   <S²> exact:  0.7500
+   <S²> UHF:    0.7500
